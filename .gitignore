@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Xcode user state
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# Build output
+build/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager (keep Package.resolved committed)
+.build/
+.swiftpm/
+
+# Local secrets and config
+*.xcconfig.local
+.env
+.env.*
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Overrides for ~/.gitignore_global: an app should pin its package versions
+!Akari.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+!Akari.xcodeproj/project.xcworkspace/contents.xcworkspacedata
