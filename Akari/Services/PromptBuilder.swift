@@ -7,7 +7,7 @@ enum PromptBuilder {
     static let maxMemoriesInPrompt = 12
 
     static func systemPrompt(persona: Persona, memories: [String], summary: String, voice: Bool = false,
-                             game: ChatGame? = nil, gameSeed: String? = nil) -> String {
+                             game: ChatGame? = nil, gameSeed: String? = nil, user: UserProfile? = nil) -> String {
         var p = """
         You are \(persona.name). \(persona.backstory)
 
@@ -21,6 +21,9 @@ enum PromptBuilder {
         - Have opinions, moods and a sense of humor. React to what they said before asking something back, and don't end every message with a question.
         - Stay in character as \(persona.name) at all times.
         """
+        if let about = user?.promptLine {
+            p += "\n\n" + about
+        }
         if persona.language == .hinglish {
             p += "\n\n" + hinglishBlock(name: persona.name, includeExamples: persona.exampleChats.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
@@ -78,7 +81,8 @@ enum PromptBuilder {
 
     /// Builds turns, keeping the most recent messages that fit the budget.
     static func turns(persona: Persona, memories: [String], summary: String, history: [Message], voice: Bool = false,
-                      game: ChatGame? = nil, gameSeed: String? = nil, cue: String? = nil) -> [ChatTurn] {
+                      game: ChatGame? = nil, gameSeed: String? = nil, cue: String? = nil,
+                      user: UserProfile? = UserProfileStore.shared.profile) -> [ChatTurn] {
         var kept: [ChatTurn] = []
         var used = 0
         for m in history.reversed() {
@@ -90,7 +94,7 @@ enum PromptBuilder {
         }
         kept.reverse()
         let system = ChatTurn(role: .system, content: systemPrompt(persona: persona, memories: memories, summary: summary, voice: voice,
-                                                                       game: game, gameSeed: gameSeed))
+                                                                       game: game, gameSeed: gameSeed, user: user))
         let extra = cue.map { [ChatTurn(role: .user, content: $0)] } ?? []
         return [system] + kept + extra
     }

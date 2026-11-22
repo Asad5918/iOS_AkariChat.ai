@@ -1,6 +1,6 @@
 # Akari
 
-iOS app (SwiftUI, iOS 17+) where you chat and talk with human-sounding AI personas that run **fully on-device** via MLX Swift. Tabs: Home (static social feed), Discover (swipe deck, demo data), Chats (personas + chat + voice call).
+iOS app (SwiftUI, iOS 17+) where you chat and talk with human-sounding AI personas that run **fully on-device** via MLX Swift. Tabs: Home (static social feed), Discover (swipe deck, demo data), Chats (personas + chat + voice call), You (your profile).
 
 ## Build & run
 
@@ -24,6 +24,8 @@ iOS app (SwiftUI, iOS 17+) where you chat and talk with human-sounding AI person
 - `ContentView` shows `ModelSetupView` until a model has loaded once, then the tab bar.
 
 - Chat extras: `Message` has `reaction`, `seen`, `imageData` (all optional/defaulted). Read receipts and "typing…" come from `ChatViewModel` (`awaitingRead`, `showTyping`); "online / last seen" from `Presence` in `Services/Polish.swift`, which also holds `Haptics` and `PressableStyle`. Photos in chat are noted in the prompt as "[user sent a photo]" (the model can't see them). `AppRouter` lets Discover open a chat in the Chats tab after a match; Discover has `ProfileDetailView` and `MatchView` in `DiscoverDetail.swift`.
+
+- "You" tab: `Features/Profile/ProfileView.swift` (profile + `ProfileEditor`, `UserAvatar`). `Services/UserProfile.swift` holds `UserProfile` (name, emoji, age, gender, city, bio, interests) and `UserProfileStore.shared` (JSON in UserDefaults key `userProfile`, photo at Documents/profile.jpg). `UserProfile.promptLine` is added to the system prompt right after the rules (keep the text identical to the Android port); Home posts/comments and the match screen use your name and avatar.
 
 ## Conventions & gotchas
 

@@ -161,7 +161,15 @@ struct MatchView: View {
                     .opacity(appeared ? 1 : 0)
 
                 HStack(spacing: -22) {
-                    avatar("😎", [.indigo, .purple])
+                    Group {
+                        if UserProfileStore.shared.profile.hasPhoto {
+                            UserAvatar(size: 150)
+                                .overlay(Circle().stroke(.white, lineWidth: 5))
+                                .shadow(color: .black.opacity(0.25), radius: 10, y: 6)
+                        } else {
+                            avatar(UserProfileStore.shared.profile.emoji, [.indigo, .purple])
+                        }
+                    }
                         .offset(x: appeared ? 0 : -220)
                         .rotationEffect(.degrees(appeared ? -8 : -30))
                     avatar(profile.emoji, profile.colors)

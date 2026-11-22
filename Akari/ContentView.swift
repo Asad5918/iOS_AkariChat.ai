@@ -23,6 +23,9 @@ struct ContentView: View {
                     PersonaListView()
                         .tabItem { Label("Chats", systemImage: "bubble.left.and.bubble.right.fill") }
                         .tag(2)
+                    ProfileView()
+                        .tabItem { Label("You", systemImage: "person.crop.circle.fill") }
+                        .tag(3)
                 }
                 .onChange(of: router.tab) { _, new in
                     Haptics.select()
@@ -40,7 +43,7 @@ struct ContentView: View {
 
 /// Plays the system wiggle symbol effect on the selected tab's icon in the real UITabBar.
 enum TabBarWiggle {
-    static func play(at index: Int, of count: Int = 3) {
+    static func play(at index: Int, of count: Int = 4) {
         // Wait a beat so the bar has swapped in the selected icon.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             guard let bar = tabBar() else { return }

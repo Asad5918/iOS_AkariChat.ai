@@ -21,6 +21,8 @@ struct FeedPost: Identifiable {
     var image: UIImage? = nil
     var banner: [Color]? = nil
     var bannerEmoji: String? = nil
+    /// Posted by the app user (shows their profile photo).
+    var isMine = false
     var likes: Int
     var liked = false
     var comments: [FeedComment]
@@ -40,13 +42,15 @@ final class FeedStore {
 
     func addComment(_ text: String, to id: UUID) {
         guard let i = index(of: id) else { return }
-        posts[i].comments.append(FeedComment(author: "You", text: text))
+        posts[i].comments.append(FeedComment(author: UserProfileStore.shared.profile.displayName, text: text))
     }
 
     @discardableResult
     func addPost(_ text: String, image: UIImage? = nil) -> UUID {
-        let post = FeedPost(author: "You", emoji: "😎", colors: [.indigo, .purple], time: "now",
+        let me = UserProfileStore.shared
+        var post = FeedPost(author: me.profile.displayName, emoji: me.profile.emoji, colors: [.indigo, .purple], time: "now",
                             text: text, image: image, likes: 0, comments: [])
+        post.isMine = true
         posts.insert(post, at: 0)
         return post.id
     }
@@ -158,7 +162,7 @@ struct HomeView: View {
     private var composerBar: some View {
         Button { pause(); composing = true } label: {
             HStack(spacing: 10) {
-                Text("😎").font(.title2)
+                UserAvatar(size: 32)
                 Text("What's on your mind?")
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -196,10 +200,14 @@ struct PostCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 10) {
-                Text(post.emoji)
-                    .font(.title2)
-                    .frame(width: 42, height: 42)
-                    .background(LinearGradient(colors: post.colors, startPoint: .topLeading, endPoint: .bottomTrailing), in: Circle())
+                if post.isMine {
+                    UserAvatar(size: 42)
+                } else {
+                    Text(post.emoji)
+                        .font(.title2)
+                        .frame(width: 42, height: 42)
+                        .background(LinearGradient(colors: post.colors, startPoint: .topLeading, endPoint: .bottomTrailing), in: Circle())
+                }
                 VStack(alignment: .leading, spacing: 1) {
                     Text(post.author).font(.subheadline.weight(.semibold))
                     Text(post.time).font(.caption).foregroundStyle(.secondary)
